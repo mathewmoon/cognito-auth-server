@@ -1,0 +1,42 @@
+#!/usr/bin/env python3.8
+from time import sleep
+from json import load
+from cognito_auth_server.utils import (
+    validate_args,
+    get_runtime_config,
+    start_server,
+)
+from cognito_auth_server.server import logger
+from cognito_auth_server.server_args import parse_args, parser
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    if "retries" in args:
+        retries = args["retries"]
+        del args["retries"]
+    else:
+        retries = 5
+
+    validate_args(args, parser)
+    try:
+        config = get_runtime_config(args)
+    except Exception as e:
+        print(f"Could not load config {e}")
+        logger.error(f"Could not load config: {e}")
+        exit()
+
+    errors = 0
+    while errors <= retries:
+        try:
+            start_server(config)
+        except Exception as e:
+            errors += 1
+            logger.exception(f"Error starting server. {str(e)}")
+            if errors > retries:
+                logger.error("Reached max retries. Giving up")
+                exit()
+            else:
+                logger.error(
+                    f"Trying {retries - errors} more times....")
+            sleep(5)
