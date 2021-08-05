@@ -36,7 +36,6 @@ based credential mapping
 Usage
 =====
 
-.. code-block:: shell
     >cognito-auth-server -h
 
     usage: cognito-auth-server [-h] [-s {http,unix,tcp}] [-C {iam,tokens}] [-p COGNITO_PROFILE] [-f COGNITO_CREDENTIALS_FILE] [-c CONFIG_FILE] [-P PORT] [-H HOST] [-u USER] [-g GROUP] [--permissions PERMISSIONS] [-S SOCKET_PATH] [-n SERVER_NAME] [-i INSTALL_DIR] [-e]
@@ -81,25 +80,21 @@ Usage
 
 
 ### Using ~/.aws/cognito_profile
-.. code-block:: shell
 
     > cognito-auth-server -s tcp -p my_cognito_profile
 
 
 ### Using a config file
-.. code-block:: shell
 
     > cognito-auth-server -s tcp -c /path/to/config.json
 
 ### Using a secret
-.. code-block:: shell
 
     > cognito-auth-server -s http -e -a superubersecret
 
 
 Example config
 ==============
-.. code-block:: json
 
     {
         "global": {
@@ -130,34 +125,26 @@ Getting credentials
 ===================
 
 ### From tcp
-.. code-block:: shell
 
     > nc localhost 5500
 
 ### From tcp using a secret
-.. code-block:: shell
 
     > nc localhost 5500 <<< mysuperdupermadeupsecret
 
 ### From unix domain socket
-.. code-block:: shell
 
     > nc -U /path/to/socket.sock
 
 ### From unix using a secret
-.. code-block:: shell
 
     > nc -U /path/to/socket.sock <<< mysuperdupermadeupsecret
 
 ### From tcp
 
-.. code-block:: shell
-
     > curl http://localhost:8080
 
 ### From tcp using secret
-
-.. code-block:: shell
 
     > curl -H "Cognito-Api-Key: mysuperdupermadeupsecret" http://localhost:8080
 
@@ -171,15 +158,12 @@ Using the server as the default AWS credential provider
 Once you have the server running you can use these credentials with any application that uses your AWS credentials or config file. Just update
 your profile to use your server as the credential_process. An example of ~/.aws/credentials
 
-.. code-block:: yaml
 
     [cognito_server]
     credential_process: sh -c "nc localhost 5500"
 
 
 And now this profile will automatically use the server. You can test this by running an aws cli command such as:
-
-.. code-block:: shell
 
     > aws --profile cognito_server s3 ls
 
